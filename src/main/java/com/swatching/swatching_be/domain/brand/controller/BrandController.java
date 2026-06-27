@@ -1,8 +1,8 @@
-package com.swatching.swatching_be.brand.controller;
+package com.swatching.swatching_be.domain.brand.controller;
 
-import com.swatching.swatching_be.brand.dto.BrandDetailResponse;
-import com.swatching.swatching_be.brand.dto.BrandRecommendResponse;
-import com.swatching.swatching_be.brand.service.BrandService;
+import com.swatching.swatching_be.domain.brand.dto.BrandDetailResponse;
+import com.swatching.swatching_be.domain.brand.dto.BrandRecommendResponse;
+import com.swatching.swatching_be.domain.brand.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
