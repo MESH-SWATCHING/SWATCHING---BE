@@ -3,7 +3,6 @@ package com.swatching.swatching_be.domain.archive.service;
 import com.swatching.swatching_be.domain.archive.converter.ArchiveConverter;
 import com.swatching.swatching_be.domain.archive.dto.ArchiveResDTO;
 import com.swatching.swatching_be.domain.archive.entity.UserCategory;
-import com.swatching.swatching_be.domain.archive.repository.SavedBrandCategoryRepository;
 import com.swatching.swatching_be.domain.archive.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.archive.repository.UserCategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class ArchiveService {
 
     private final UserCategoryRepository userCategoryRepository;
-    private final SavedBrandCategoryRepository savedBrandRepository;
+    private final SavedBrandRepository savedBrandRepository;
 
     public ArchiveResDTO.CategoryListDTO getMySwatchCategories(Long userId) {
         List<UserCategory> categories = userCategoryRepository.findAllByUserId(userId);

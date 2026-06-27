@@ -19,6 +19,6 @@ public class ArchiveController {
     @GetMapping("/my-swatch/categories")
     public ApiResponse<ArchiveResDTO.CategoryListDTO> getMySwatchCategories() {
         Long userId = 1L; // TODO: 로그인 구현 후 인증 객체에서 userId 가져오기
-        return ApiResponse.success(archiveService.getMySwatchCategories(userId));
+        return ApiResponse.success("카테고리 목록 조회 성공", archiveService.getMySwatchCategories(userId));
     }
 }
