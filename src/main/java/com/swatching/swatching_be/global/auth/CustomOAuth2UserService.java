@@ -1,6 +1,6 @@
 package com.swatching.swatching_be.global.auth;
 
-import com.swatching.swatching_be.domain.category.service.CategoryService;
+import com.swatching.swatching_be.domain.category.CategoryService;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.domain.user.UserRepository;
 import com.swatching.swatching_be.domain.user.UserRole;
