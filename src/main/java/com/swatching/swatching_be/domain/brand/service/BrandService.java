@@ -128,7 +128,26 @@ public class BrandService {
     }
 
     public List<BrandRecommendResponse> getRecommendedBrands(Long brandId) {
-        return List.of();
+        List<String> myKeywords = brandKeywordRepository.findByBrand_Id(brandId).stream()
+                .map(bk -> bk.getKeyword().getName())
+                .toList();
+
+        if (myKeywords.isEmpty()) return List.of();
+
+        Set<String> myKeywordSet = Set.copyOf(myKeywords);
+
+        return brandRepository.findBrandsHavingAnyKeyword(myKeywords).stream()
+                .filter(b -> !b.getId().equals(brandId))
+                .map(b -> {
+                    List<String> keywords = brandKeywordRepository.findByBrand_Id(b.getId()).stream()
+                            .map(bk -> bk.getKeyword().getName()).toList();
+                    long overlap = keywords.stream().filter(myKeywordSet::contains).count();
+                    return Map.entry(overlap, new BrandRecommendResponse(b.getId(), b.getName(), b.getSummary(), b.getMainImageUrl(), keywords));
+                })
+                .sorted(Map.Entry.<Long, BrandRecommendResponse>comparingByKey().reversed())
+                .limit(5)
+                .map(Map.Entry::getValue)
+                .toList();
     }
 
     // ── 정렬 로직 ─────────────────────────────────────────────────────
