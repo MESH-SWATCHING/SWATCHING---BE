@@ -5,6 +5,7 @@ import com.swatching.swatching_be.global.auth.CustomOAuth2UserService;
 import com.swatching.swatching_be.global.auth.JwtAuthFilter;
 import com.swatching.swatching_be.global.auth.OAuth2SuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,17 +34,20 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final ObjectMapper objectMapper;
+    private final List<String> allowedOrigins;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                           OAuth2SuccessHandler oAuth2SuccessHandler,
                           JwtAuthFilter jwtAuthFilter,
                           ClientRegistrationRepository clientRegistrationRepository,
-                          ObjectMapper objectMapper) {
+                          ObjectMapper objectMapper,
+                          @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.jwtAuthFilter = jwtAuthFilter;
         this.clientRegistrationRepository = clientRegistrationRepository;
         this.objectMapper = objectMapper;
+        this.allowedOrigins = allowedOrigins;
     }
 
     @Bean
@@ -90,7 +94,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

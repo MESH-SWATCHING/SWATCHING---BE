@@ -2,6 +2,7 @@ package com.swatching.swatching_be.domain.brand.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.Getter;
 
 @Getter
@@ -11,6 +12,8 @@ public class BrandSubmitRequest {
     private String name;
 
     private String summary;
+
+    private String story;
 
     private String instagramUrl;
 
@@ -25,4 +28,6 @@ public class BrandSubmitRequest {
 
     @NotBlank(message = "담당자 연락처를 입력해주세요.")
     private String managerPhone;
+
+    private List<String> keywords;
 }

@@ -45,6 +45,8 @@ app:
       region: ${AWS_S3_REGION:ap-southeast-2}
       public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
   oauth2:
-    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:8080/auth-callback.html}
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:5173/auth-callback}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174}
   admin:
     emails: ${ADMIN_EMAILS:}

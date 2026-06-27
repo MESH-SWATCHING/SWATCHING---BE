@@ -78,6 +78,11 @@ public class Brand {
         this.rejectReason = reason;
     }
 
+    public void updateSubmissionContent(String story, String mainImageUrl) {
+        this.story = story;
+        this.mainImageUrl = mainImageUrl;
+    }
+
     public static Brand createSubmission(String name, String summary, String instagramUrl, String websiteUrl,
                                          String managerName, String managerEmail, String managerPhone, User ownerUser) {
         Brand brand = new Brand();

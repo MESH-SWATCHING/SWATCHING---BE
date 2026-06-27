@@ -10,4 +10,9 @@ public class ArchiveReqDTO {
     public static class SaveBrandDTO {
         private List<Long> categoryIds;
     }
+
+    @Getter
+    public static class AddSavedBrandsToCategoryDTO {
+        private List<Long> savedBrandIds;
+    }
 }

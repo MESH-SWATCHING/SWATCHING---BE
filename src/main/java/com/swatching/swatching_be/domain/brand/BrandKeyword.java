@@ -23,4 +23,11 @@ public class BrandKeyword {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id", nullable = false)
     private Keyword keyword;
+
+    public static BrandKeyword create(Brand brand, Keyword keyword) {
+        BrandKeyword brandKeyword = new BrandKeyword();
+        brandKeyword.brand = brand;
+        brandKeyword.keyword = keyword;
+        return brandKeyword;
+    }
 }

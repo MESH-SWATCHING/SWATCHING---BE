@@ -12,6 +12,8 @@ public interface SavedBrandCategoryRepository extends JpaRepository<SavedBrandCa
 
     void deleteAllByCategoryId(Long categoryId);
 
+    boolean existsBySavedBrandIdAndCategoryId(Long savedBrandId, Long categoryId);
+
     @Query("SELECT sbc.category.id, COUNT(sbc) FROM SavedBrandCategory sbc " +
             "WHERE sbc.savedBrand.user.id = :userId GROUP BY sbc.category.id")
     List<Object[]> countBrandsByCategoryRaw(@Param("userId") Long userId);

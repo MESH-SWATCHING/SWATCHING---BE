@@ -14,6 +14,8 @@ import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
 import com.swatching.swatching_be.domain.image.service.ImageUploadService;
+import com.swatching.swatching_be.domain.keyword.Keyword;
+import com.swatching.swatching_be.domain.keyword.repository.KeywordRepository;
 import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class BrandService {
     private final BrandKeywordRepository brandKeywordRepository;
     private final BrandImageRepository brandImageRepository;
     private final SavedBrandRepository savedBrandRepository;
+    private final KeywordRepository keywordRepository;
     private final BrandScoringService scoring;
     private final ImageUploadService imageUploadService;
 
@@ -129,13 +132,21 @@ public class BrandService {
 
     @Transactional
     public void submitBrand(BrandSubmitRequest request, User user) {
+        submitBrand(request, user, null, List.of());
+    }
+
+    @Transactional
+    public void submitBrand(BrandSubmitRequest request, User user, String mainImageUrl, List<String> visualImageUrls) {
         Brand brand = Brand.createSubmission(
                 request.getName(), request.getSummary(),
                 request.getInstagramUrl(), request.getWebsiteUrl(),
                 request.getManagerName(), request.getManagerEmail(), request.getManagerPhone(),
                 user
         );
+        brand.updateSubmissionContent(request.getStory(), mainImageUrl);
         brandRepository.save(brand);
+        saveBrandKeywords(brand, request.getKeywords());
+        saveBrandImages(brand, visualImageUrls);
     }
 
     public List<BrandRecommendResponse> getRecommendedBrands(Long brandId) {
@@ -270,6 +281,47 @@ public class BrandService {
                         bi -> bi.getBrand().getId(),
                         Collectors.mapping(BrandImage::getImageUrl, Collectors.toList())
                 ));
+    }
+
+    private void saveBrandKeywords(Brand brand, List<String> keywords) {
+        List<String> normalized = keywords == null
+                ? List.of()
+                : keywords.stream()
+                .filter(keyword -> keyword != null && !keyword.isBlank())
+                .map(String::trim)
+                .distinct()
+                .toList();
+
+        if (normalized.isEmpty()) {
+            return;
+        }
+
+        List<Keyword> foundKeywords = keywordRepository.findAllByNameIn(normalized);
+        Set<String> foundNames = foundKeywords.stream()
+                .map(Keyword::getName)
+                .collect(Collectors.toSet());
+        if (!foundNames.containsAll(normalized)) {
+            throw new IllegalArgumentException("Unknown keyword.");
+        }
+
+        brandKeywordRepository.saveAll(
+                foundKeywords.stream()
+                        .map(keyword -> BrandKeyword.create(brand, keyword))
+                        .toList()
+        );
+    }
+
+    private void saveBrandImages(Brand brand, List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return;
+        }
+        brandImageRepository.saveAll(
+                imageUrls.stream()
+                        .filter(imageUrl -> imageUrl != null && !imageUrl.isBlank())
+                        .distinct()
+                        .map(imageUrl -> BrandImage.create(brand, imageUrl))
+                        .toList()
+        );
     }
 
     private void addRecentMood(List<String> recentMoods, String mood) {

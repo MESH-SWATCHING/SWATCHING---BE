@@ -21,8 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,6 +91,43 @@ public class ArchiveService {
                 }
             }
         }
+
+        savedBrandCategoryRepository.saveAll(links);
+    }
+
+    @Transactional
+    public void addSavedBrandsToCategory(
+            Long userId,
+            Long categoryId,
+            ArchiveReqDTO.AddSavedBrandsToCategoryDTO request
+    ) {
+        Category category = categoryRepository.findByIdAndUserId(categoryId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found."));
+
+        List<Long> requestedIds = request == null || request.getSavedBrandIds() == null
+                ? List.of()
+                : request.getSavedBrandIds().stream()
+                .filter(id -> id != null)
+                .distinct()
+                .toList();
+
+        if (requestedIds.isEmpty()) {
+            return;
+        }
+
+        List<SavedBrand> savedBrands = savedBrandRepository.findAllByIdInAndUserId(requestedIds, userId);
+        Set<Long> foundIds = savedBrands.stream()
+                .map(SavedBrand::getId)
+                .collect(Collectors.toSet());
+        if (!foundIds.containsAll(new HashSet<>(requestedIds))) {
+            throw new IllegalArgumentException("Saved brand not found.");
+        }
+
+        List<SavedBrandCategory> links = savedBrands.stream()
+                .filter(savedBrand -> !savedBrandCategoryRepository
+                        .existsBySavedBrandIdAndCategoryId(savedBrand.getId(), category.getId()))
+                .map(savedBrand -> SavedBrandCategory.create(savedBrand, category))
+                .toList();
 
         savedBrandCategoryRepository.saveAll(links);
     }
