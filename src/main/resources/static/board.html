@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="ko" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Swatch Deck - Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&amp;family=Be+Vietnam+Pro:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#212126",
+                        "on-secondary-container": "#785e3b",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#291800",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#1d240c",
+                        "outline-variant": "#c8c5cb",
+                        "on-tertiary-container": "#848c6c",
+                        "surface": "#faf9f5",
+                        "surface-tint": "#5e5e63",
+                        "on-primary-fixed": "#1b1b20",
+                        "surface-container-highest": "#e3e2df",
+                        "secondary-fixed": "#ffddb4",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#fedaae",
+                        "tertiary-fixed-dim": "#c2caa6",
+                        "surface-variant": "#e3e2df",
+                        "surface-bright": "#faf9f5",
+                        "on-primary-fixed-variant": "#47464c",
+                        "surface-container": "#efeeea",
+                        "on-surface-variant": "#47464b",
+                        "inverse-on-surface": "#f2f1ed",
+                        "secondary-fixed-dim": "#e3c197",
+                        "primary-fixed-dim": "#c8c5cc",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1b1c1a",
+                        "tertiary": "#070d00",
+                        "primary": "#0a0a0f",
+                        "secondary": "#745a38",
+                        "on-tertiary-fixed": "#171e07",
+                        "primary-fixed": "#e4e1e8",
+                        "surface-dim": "#dbdad6",
+                        "outline": "#78767b",
+                        "on-primary-container": "#89888e",
+                        "inverse-primary": "#c8c5cc",
+                        "on-surface": "#1b1c1a",
+                        "on-tertiary-fixed-variant": "#424a2e",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#5a4222",
+                        "surface-container-low": "#f5f4f0",
+                        "surface-container-high": "#e9e8e4",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#dee7c1",
+                        "inverse-surface": "#30312e",
+                        "background": "#faf9f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "1rem",
+                        "margin-mobile": "1.25rem",
+                        "grid-gap": "4px",
+                        "stack-sm": "0.5rem",
+                        "gutter": "0.75rem",
+                        "stack-lg": "2rem"
+                    },
+                    "fontFamily": {
+                        "headline-md-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-bold": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md-mobile": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+                        "display-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-bold": ["11px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.03em", "fontWeight": "500" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .chip-active {
+            background-color: #0a0a0f !important; /* primary */
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased pb-24">
+<!-- Header Section -->
+<header class="px-margin-mobile pt-12 pb-6">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter mb-2">Swatch Deck</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+            보고 싶은 결을 고르고, 브랜드를 한 장씩 깊게 만나보세요.
+        </p>
+</header>
+<!-- Main Content -->
+<main class="px-margin-mobile">
+<section class="mb-8">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-primary mb-4">오늘 어떤 결을 볼까요?</h2>
+<!-- Tags Grid -->
+<div class="flex flex-wrap gap-2 mb-4" id="chip-container"><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">빈티지</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">미니멀</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">스트릿</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">고프코어</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">테크웨어</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">클래식</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">페미닌</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">워크웨어</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">아메카지</button><button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full font-label-sm text-label-sm transition-colors duration-200 active:scale-95" onclick="toggleChip(this)">액세서리</button><script>function toggleChip(el) { const container = document.getElementById('chip-container'); const selected = container.querySelectorAll('.chip-active'); if (!el.classList.contains('chip-active') && selected.length >= 3) { el.style.animation = 'shake 0.2s ease-in-out'; setTimeout(() => el.style.animation = '', 200); return; } el.classList.toggle('chip-active'); }</script><style>@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }</style></div>
+<p class="font-body-sm text-body-sm text-outline mb-6">2~3개 선택 (전체 보기도 가능)</p>
+<!-- Primary Button -->
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-headline-md-mobile text-headline-md-mobile shadow-md active:scale-95 transition-transform duration-100 flex justify-center items-center" onclick="window.location.href='{{DATA:SCREEN:SCREEN_20}}'">
+                덱 시작하기
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Re-created as floating capsule per prompt & image reference) -->
+<nav class="fixed bottom-stack-lg left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[280px] rounded-full bg-primary shadow-lg z-50 md:hidden flex justify-around items-center px-2 py-2"><!-- Home Icon (Inactive) -->
+<a class="flex items-center justify-center text-outline hover:opacity-100 transition-opacity p-3" href="#">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">home</span>
+</a>
+
+<!-- Board (Active Pill) -->
+<a class="flex flex-row items-center justify-center bg-surface text-primary rounded-full px-5 py-2.5 gap-2 shadow-sm transition-transform active:scale-95" href="#">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 500;">grid_view</span>
+    <span class="font-label-bold text-label-bold">Board</span>
+</a>
+
+<!-- Bookmark Icon (Inactive) -->
+<a class="flex items-center justify-center text-outline hover:opacity-100 transition-opacity p-3" href="#">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">bookmark</span>
+</a></nav>
+<!-- Desktop Nav (Hidden on mobile, showing standard nav structure) -->
+<nav class="hidden md:flex justify-between items-center px-margin-mobile py-stack-md w-full top-0 sticky bg-background border-b border-surface-variant z-50">
+<div class="font-display-lg text-display-lg text-primary tracking-tighter">Swatching</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Curation</a>
+<a class="text-primary font-label-sm text-label-sm font-bold" href="#">Discover</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Archive</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Profile</a>
+</div>
+<button class="text-primary hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined">search</span>
+</button>
+</nav>
+
+
+
+
+</body></html>

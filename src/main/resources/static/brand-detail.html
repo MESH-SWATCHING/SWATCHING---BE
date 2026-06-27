@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Swatch Deck - Brand Detail</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#171e07",
+                    "inverse-surface": "#30312e",
+                    "on-primary": "#ffffff",
+                    "on-secondary-container": "#785e3b",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#e3c197",
+                    "on-primary-fixed": "#1b1b20",
+                    "surface-tint": "#5e5e63",
+                    "surface-container-high": "#e9e8e4",
+                    "surface-dim": "#dbdad6",
+                    "tertiary": "#070d00",
+                    "secondary": "#745a38",
+                    "inverse-on-surface": "#f2f1ed",
+                    "on-surface-variant": "#47464b",
+                    "tertiary-fixed": "#dee7c1",
+                    "surface": "#faf9f5",
+                    "primary-container": "#212126",
+                    "outline-variant": "#c8c5cb",
+                    "on-secondary-fixed-variant": "#5a4222",
+                    "surface-container-highest": "#e3e2df",
+                    "primary-fixed": "#e4e1e8",
+                    "tertiary-fixed-dim": "#c2caa6",
+                    "secondary-container": "#fedaae",
+                    "on-primary-fixed-variant": "#47464c",
+                    "secondary-fixed": "#ffddb4",
+                    "primary": "#0a0a0f",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#c8c5cc",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f5f4f0",
+                    "on-secondary-fixed": "#291800",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#faf9f5",
+                    "on-tertiary-fixed-variant": "#424a2e",
+                    "on-background": "#1b1c1a",
+                    "surface-container": "#efeeea",
+                    "outline": "#78767b",
+                    "background": "#faf9f5",
+                    "tertiary-container": "#1d240c",
+                    "primary-fixed-dim": "#c8c5cc",
+                    "on-tertiary-container": "#848c6c",
+                    "on-primary-container": "#89888e",
+                    "surface-variant": "#e3e2df",
+                    "on-surface": "#1b1c1a",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "stack-lg": "2rem",
+                    "gutter": "0.75rem",
+                    "margin-mobile": "1.25rem",
+                    "grid-gap": "4px"
+            },
+            "fontFamily": {
+                    "body-md": ["Be Vietnam Pro"],
+                    "body-sm": ["Be Vietnam Pro"],
+                    "headline-md-mobile": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "label-bold": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "body-sm": ["12px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "headline-md-mobile": ["16px", {"lineHeight": "22px", "fontWeight": "700"}],
+                    "headline-md": ["18px", {"lineHeight": "24px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "display-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-sm": ["10px", {"lineHeight": "12px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "label-bold": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-interaction:active {
+            transform: scale(0.96);
+            transition: transform 0.1s ease;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col items-center pb-32">
+<!-- Header Section -->
+<header class="w-full max-w-md flex justify-between items-center px-margin-mobile pt-10 pb-6">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">Swatch Deck</h1>
+<button class="font-label-bold text-label-bold text-outline hover:text-on-surface-variant transition-colors active-interaction">
+            초기화
+        </button>
+</header>
+<!-- Main Card Container -->
+<main class="w-full max-w-md px-margin-mobile">
+<div class="bg-surface-container-lowest rounded-[2rem] overflow-hidden border border-outline-variant/30 shadow-sm transition-all duration-300 hover:shadow-md">
+<!-- Hero Image Section -->
+<div class="relative h-[420px] w-full">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A cinematic, high-fashion editorial portrait of a meticulous craftsman working in a warm, dimly lit workshop. The artisan, wearing a contemporary cap and glasses, is focused on a textured wooden tool. Soft spotlights create dramatic shadows and highlight metal lathe components in the background. The aesthetic is sophisticated and tactile, reflecting a premium artisan brand identity with earth tones and industrial textures." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAnDHKKwI3_5EodJk7g7fVo7k4Kr_yi5OuPr99jP8jPCdZx8gXbedohPP1e33dx5qewm55bQDTgG60sk2Eu6ymlhIpuH2f5SJ_KW4anV4H8Kf5I--_yCfQUQoanaZcd8WR-xhoeYrU2MLtyYMZlsoYd4YljR7nujQwnjaEKmAw3OW4oCbPJ-XWAziWi3k7wxGhbFfb7LJ2OXy9egECms0Pkm43IgPLIITmZVVhJLF_bHwvRuXxAhhYTwi92esq-XDz2pLzxZzewooM')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<!-- Bookmark Button -->
+<button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white active-interaction">
+<span class="material-symbols-outlined text-[20px]" data-icon="bookmark">bookmark</span>
+</button>
+<!-- Brand Identity Text -->
+<div class="absolute bottom-8 left-6 right-6">
+<h2 class="font-display-lg text-display-lg text-on-primary mb-2">ADER ERROR</h2>
+<p class="font-body-md text-white/90 leading-tight">현실과 비현실 사이, 왜곡된 감각의 새로운 언어</p>
+</div>
+</div>
+<!-- Content Area -->
+<div class="p-6">
+<!-- Category Tags -->
+<div class="mb-6">
+<span class="font-body-sm text-on-surface-variant opacity-70">Street · Amekaji · Vintage</span>
+</div>
+<!-- Blockquote Description -->
+<div class="relative pl-4 mb-8 border-l-[1.5px] border-primary">
+<p class="font-body-md text-on-surface leading-relaxed italic">
+                        "ADER ERROR는 서울을 기반으로 한 크리에이티브 그룹이다. 오류를 미학적 언어로 삼아 패션·아트·공간을 넘나드는 독자적 세계관을 구축한다...."
+                    </p>
+</div>
+<!-- Visual Grid -->
+<div class="mb-8">
+<h3 class="font-label-bold text-label-bold text-outline uppercase tracking-widest mb-4">BRAND VISUALS</h3>
+<div class="grid grid-cols-2 gap-grid-gap">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="A high-contrast street style fashion photograph featuring a model in a technical black jacket reaching towards the camera. The background is a vibrant, cluttered urban wall covered in graphic posters and street art. The lighting is harsh and directional, creating a moody, avant-garde aesthetic consistent with contemporary Seoul fashion trends." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe0u81FsxggZ3BbbkQ7xDByr_qoPKAo4i0JaP2ISL2RKogellq2iONa9bzu0h9eAjPzclPKSPuWjiq_iQUv39I1BfA5VSglKZiG0J0jcNp5MRhD_Fj3ea4_xFoe9jssIw3JVHqRLi4HIrno_dhgHz9kRFn_JFDfiSqpyDJ8bUFxQmJB6vxZxuR0FB-R2QHQivNWq4ATPW_bfN2vmFeakKUCHq-CGT5TgOg2NntEcE3lewnpGBxKr-MQDtmgld78MWdpolPC1kqaCA"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A clean, professional flat lay of premium menswear items. A pair of textured charcoal grey trousers is paired with a minimalist black sweater and white leather sneakers with subtle red accents. A luxury watch is positioned nearby. The composition is structured and minimalist, photographed on a neutral concrete surface with soft, diffused daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEOU_gKq3o00qhFVORmBjzRu5Dpfjmi4R4zI_ccI3R4DSCqkjRaipRo9McfRjKDVI1-9-et0TDbkVi3sp-fsb2RKj4i7iUY5DmaPTS_VsSK2IrcwCr1h1hkCbdURKKFa2UJ8G6O2ac8NTKpRwd1vGu0sK5FfX8B4vKlj1V1OPKaqvnqrVamHQFMjqmfX6LLjcqV2L7jzDDILipChSj7VDglzmd8D_vmT5YOSNG0un5Lb7bpDafvb3V0SVlYva3tki5HcNVTEE2h3I"/>
+</div>
+</div>
+</div>
+<!-- Footer Links -->
+<div class="flex items-center justify-between">
+<div class="flex gap-4">
+<a class="flex items-center gap-1.5 font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+                            Instagram
+                        </a>
+<a class="flex items-center gap-1.5 font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="language">language</span>
+                            Website
+                        </a>
+</div>
+<button class="font-label-bold text-label-bold text-primary flex items-center gap-1 hover:underline active-interaction">
+                        브랜드 노트 보기
+                        <span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation / Action Row -->
+<div class="fixed bottom-0 left-0 w-full bg-gradient-to-t from-background via-background to-transparent pt-12 pb-10 flex flex-col items-center pointer-events-none">
+<div class="flex gap-3 px-margin-mobile w-full max-w-md pointer-events-auto">
+<!-- Next Button -->
+<button class="flex-1 h-16 bg-surface-container-high rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-highest transition-colors active-interaction shadow-sm">
+                다음 스와치
+            </button>
+<!-- Save Button -->
+<button class="flex-[1.2] h-16 bg-primary rounded-full flex items-center justify-center gap-2 font-headline-md text-headline-md text-on-primary hover:bg-opacity-90 transition-colors active-interaction shadow-lg">
+<span class="material-symbols-outlined" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+                내 스와치에 담기
+            </button>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple scale interaction for buttons
+        document.querySelectorAll('.active-interaction').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.style.transform = 'scale(0.97)';
+            });
+            button.addEventListener('touchend', () => {
+                button.style.transform = 'scale(1)';
+            });
+        });
+
+        // Interactive card entrance
+        window.addEventListener('DOMContentLoaded', () => {
+            const card = document.querySelector('main');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body></html>
