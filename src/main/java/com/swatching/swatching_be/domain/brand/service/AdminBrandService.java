@@ -4,6 +4,7 @@ import com.swatching.swatching_be.domain.brand.Brand;
 import com.swatching.swatching_be.domain.brand.BrandVisibility;
 import com.swatching.swatching_be.domain.brand.dto.AdminBrandDto;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
+import com.swatching.swatching_be.domain.image.service.ImageUploadService;
 import com.swatching.swatching_be.global.exception.BusinessException;
 import com.swatching.swatching_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AdminBrandService {
 
     private final BrandRepository brandRepository;
+    private final ImageUploadService imageUploadService;
 
     public List<AdminBrandDto.Response> getBrands(BrandVisibility status) {
         List<Brand> brands = (status == null)
@@ -25,7 +27,7 @@ public class AdminBrandService {
                 : brandRepository.findAllByVisibilityOrderByCreatedAtDesc(status);
 
         return brands.stream()
-                .map(AdminBrandDto.Response::from)
+                .map(brand -> toResponse(brand))
                 .toList();
     }
 
@@ -42,6 +44,30 @@ public class AdminBrandService {
         }
         Brand brand = findBrand(brandId);
         brand.reject(reason);
+    }
+
+    public AdminBrandDto.Response getBrand(Long brandId) {
+        return toResponse(findBrand(brandId));
+    }
+
+    private AdminBrandDto.Response toResponse(Brand brand) {
+        AdminBrandDto.Response base = AdminBrandDto.Response.from(brand);
+        String viewUrl = imageUploadService.createViewUrl(base.getMainImageUrl());
+        return AdminBrandDto.Response.builder()
+                .brandId(base.getBrandId())
+                .name(base.getName())
+                .summary(base.getSummary())
+                .mainImageUrl(viewUrl)
+                .status(base.getStatus())
+                .rejectReason(base.getRejectReason())
+                .createdAt(base.getCreatedAt())
+                .submitterNickname(base.getSubmitterNickname())
+                .managerName(base.getManagerName())
+                .managerEmail(base.getManagerEmail())
+                .managerPhone(base.getManagerPhone())
+                .instagramUrl(base.getInstagramUrl())
+                .websiteUrl(base.getWebsiteUrl())
+                .build();
     }
 
     private Brand findBrand(Long brandId) {

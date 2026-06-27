@@ -31,6 +31,12 @@ public class AdminBrandController {
         return ResponseEntity.ok(ApiResponse.success("브랜드 목록 조회 완료", data));
     }
 
+    @GetMapping("/{brandId}")
+    public ResponseEntity<ApiResponse<AdminBrandDto.Response>> getBrand(@PathVariable Long brandId) {
+        checkAdmin();
+        return ResponseEntity.ok(ApiResponse.success("브랜드 조회 완료", adminBrandService.getBrand(brandId)));
+    }
+
     @PatchMapping("/{brandId}/approve")
     public ResponseEntity<ApiResponse<Void>> approve(@PathVariable Long brandId) {
         checkAdmin();
