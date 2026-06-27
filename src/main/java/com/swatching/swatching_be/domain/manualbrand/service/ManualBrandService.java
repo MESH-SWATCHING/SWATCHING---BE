@@ -1,6 +1,8 @@
 package com.swatching.swatching_be.domain.manualbrand.service;
 
 import com.swatching.swatching_be.domain.brand.Brand;
+import com.swatching.swatching_be.domain.brand.BrandImage;
+import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
 import com.swatching.swatching_be.domain.category.Category;
 import com.swatching.swatching_be.domain.category.repository.CategoryRepository;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ManualBrandService {
 
     private final BrandRepository brandRepository;
+    private final BrandImageRepository brandImageRepository;
     private final SavedBrandRepository savedBrandRepository;
     private final SavedBrandCategoryRepository savedBrandCategoryRepository;
     private final CategoryRepository categoryRepository;
@@ -36,12 +39,14 @@ public class ManualBrandService {
 
     public ManualBrandService(
             BrandRepository brandRepository,
+            BrandImageRepository brandImageRepository,
             SavedBrandRepository savedBrandRepository,
             SavedBrandCategoryRepository savedBrandCategoryRepository,
             CategoryRepository categoryRepository,
             CategoryService categoryService
     ) {
         this.brandRepository = brandRepository;
+        this.brandImageRepository = brandImageRepository;
         this.savedBrandRepository = savedBrandRepository;
         this.savedBrandCategoryRepository = savedBrandCategoryRepository;
         this.categoryRepository = categoryRepository;
@@ -50,15 +55,29 @@ public class ManualBrandService {
 
     @Transactional
     public ManualBrandResponse createManualBrand(User user, CreateManualBrandRequest request) {
-        String name = normalizeRequiredText(request.name(), "브랜드 이름은 필수입니다.", 255);
+        return createManualBrand(user, request, null, List.of());
+    }
+
+    @Transactional
+    public ManualBrandResponse createManualBrand(
+            User user,
+            CreateManualBrandRequest request,
+            String mainImageUrl,
+            List<String> imageUrls
+    ) {
+        String name = normalizeRequiredText(request.name(), "Brand name is required.", 255);
         String instagramUrl = normalizeUrl(request.instagramUrl(), "instagramUrl");
         String websiteUrl = normalizeUrl(request.websiteUrl(), "websiteUrl");
-        String memo = normalizeOptionalText(request.memo(), "메모는 최대 500자까지 가능합니다.", 500);
+        String normalizedMainImageUrl = normalizeUrl(mainImageUrl, "mainImageUrl");
+        List<String> normalizedImageUrls = normalizeImageUrls(imageUrls);
+        String memo = normalizeOptionalText(request.memo(), "Memo must be 500 characters or less.", 500);
 
         Category defaultCategory = categoryService.getOrCreateDefaultCategory(user);
         List<Category> categories = resolveCategories(user, defaultCategory, request.categoryIds());
 
-        Brand brand = brandRepository.save(Brand.createManual(name, instagramUrl, websiteUrl, user));
+        Brand brand = brandRepository.save(Brand.createManual(name, instagramUrl, websiteUrl, normalizedMainImageUrl, user));
+        saveBrandImages(brand, normalizedImageUrls);
+
         SavedBrand savedBrand = savedBrandRepository.save(SavedBrand.create(user, brand, memo));
 
         List<SavedBrandCategory> links = categories.stream()
@@ -69,7 +88,18 @@ public class ManualBrandService {
         List<Long> categoryIds = categories.stream()
                 .map(Category::getId)
                 .toList();
-        return ManualBrandResponse.of(savedBrand.getId(), brand, categoryIds);
+        return ManualBrandResponse.of(savedBrand.getId(), brand, normalizedImageUrls, categoryIds);
+    }
+
+    private void saveBrandImages(Brand brand, List<String> imageUrls) {
+        if (imageUrls.isEmpty()) {
+            return;
+        }
+
+        List<BrandImage> brandImages = imageUrls.stream()
+                .map(imageUrl -> BrandImage.create(brand, imageUrl))
+                .toList();
+        brandImageRepository.saveAll(brandImages);
     }
 
     private List<Category> resolveCategories(User user, Category defaultCategory, List<Long> requestedCategoryIds) {
@@ -93,7 +123,7 @@ public class ManualBrandService {
                 .map(Category::getId)
                 .collect(Collectors.toSet());
         if (!foundIds.containsAll(requestedWithoutDefault)) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, "카테고리를 찾을 수 없습니다.");
+            throw new BusinessException(ErrorCode.NOT_FOUND, "Category not found.");
         }
 
         List<Category> result = new ArrayList<>();
@@ -113,7 +143,7 @@ public class ManualBrandService {
             throw new BusinessException(ErrorCode.INVALID_REQUEST, blankMessage);
         }
         if (normalized.length() > maxLength) {
-            throw new BusinessException(ErrorCode.INVALID_REQUEST, "브랜드 이름은 최대 255자까지 가능합니다.");
+            throw new BusinessException(ErrorCode.INVALID_REQUEST, "Brand name must be 255 characters or less.");
         }
         return normalized;
     }
@@ -133,7 +163,7 @@ public class ManualBrandService {
     }
 
     private String normalizeUrl(String value, String fieldName) {
-        String normalized = normalizeOptionalText(value, fieldName + "은 너무 깁니다.", 2048);
+        String normalized = normalizeOptionalText(value, fieldName + " must be 2048 characters or less.", 2048);
         if (normalized == null) {
             return null;
         }
@@ -142,14 +172,26 @@ public class ManualBrandService {
             URI uri = new URI(normalized);
             String scheme = uri.getScheme();
             if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-                throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + "은 http 또는 https URL이어야 합니다.");
+                throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + " must be an http or https URL.");
             }
             if (uri.getHost() == null || uri.getHost().isBlank()) {
-                throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + " 형식이 올바르지 않습니다.");
+                throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + " is not a valid URL.");
             }
             return normalized;
         } catch (URISyntaxException exception) {
-            throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + " 형식이 올바르지 않습니다.");
+            throw new BusinessException(ErrorCode.INVALID_REQUEST, fieldName + " is not a valid URL.");
         }
+    }
+
+    private List<String> normalizeImageUrls(List<String> imageUrls) {
+        if (imageUrls == null) {
+            return List.of();
+        }
+
+        return imageUrls.stream()
+                .map(imageUrl -> normalizeUrl(imageUrl, "imageUrl"))
+                .filter(imageUrl -> imageUrl != null)
+                .distinct()
+                .toList();
     }
 }

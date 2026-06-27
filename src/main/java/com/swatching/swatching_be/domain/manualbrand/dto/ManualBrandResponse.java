@@ -8,16 +8,20 @@ public record ManualBrandResponse(
         Long savedBrandId,
         Long brandId,
         String name,
+        String mainImageUrl,
+        List<String> imageUrls,
         BrandSourceType sourceType,
         boolean isManual,
         List<Long> categoryIds
 ) {
 
-    public static ManualBrandResponse of(Long savedBrandId, Brand brand, List<Long> categoryIds) {
+    public static ManualBrandResponse of(Long savedBrandId, Brand brand, List<String> imageUrls, List<Long> categoryIds) {
         return new ManualBrandResponse(
                 savedBrandId,
                 brand.getId(),
                 brand.getName(),
+                brand.getMainImageUrl(),
+                imageUrls,
                 brand.getSourceType(),
                 true,
                 categoryIds

@@ -19,11 +19,15 @@ public class BrandCardDto {
     private final List<String> visualPreviews;
 
     public BrandCardDto(Brand brand, List<String> keywords, List<String> visualPreviews) {
+        this(brand, keywords, brand.getMainImageUrl(), visualPreviews);
+    }
+
+    public BrandCardDto(Brand brand, List<String> keywords, String mainImageUrl, List<String> visualPreviews) {
         this.brandId = brand.getId();
         this.name = brand.getName();
         this.summary = brand.getSummary();
         this.storySummary = brand.getStorySummary();
-        this.mainImageUrl = brand.getMainImageUrl();
+        this.mainImageUrl = mainImageUrl;
         this.instagramUrl = brand.getInstagramUrl();
         this.websiteUrl = brand.getWebsiteUrl();
         this.keywords = keywords;
