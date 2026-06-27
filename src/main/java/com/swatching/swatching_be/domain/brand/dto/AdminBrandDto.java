@@ -19,6 +19,12 @@ public class AdminBrandDto {
         private BrandVisibility status;
         private String rejectReason;
         private LocalDateTime createdAt;
+        private String submitterNickname;
+        private String managerName;
+        private String managerEmail;
+        private String managerPhone;
+        private String instagramUrl;
+        private String websiteUrl;
 
         public static Response from(Brand brand) {
             return Response.builder()
@@ -29,6 +35,12 @@ public class AdminBrandDto {
                     .status(brand.getVisibility())
                     .rejectReason(brand.getRejectReason())
                     .createdAt(brand.getCreatedAt())
+                    .submitterNickname(brand.getOwnerUser() != null ? brand.getOwnerUser().getNickname() : null)
+                    .managerName(brand.getManagerName())
+                    .managerEmail(brand.getManagerEmail())
+                    .managerPhone(brand.getManagerPhone())
+                    .instagramUrl(brand.getInstagramUrl())
+                    .websiteUrl(brand.getWebsiteUrl())
                     .build();
         }
     }

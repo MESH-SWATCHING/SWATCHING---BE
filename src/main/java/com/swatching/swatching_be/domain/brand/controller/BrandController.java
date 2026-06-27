@@ -4,10 +4,12 @@ import com.swatching.swatching_be.domain.brand.dto.BrandDeckResponseDto;
 import com.swatching.swatching_be.domain.brand.dto.BrandDetailResponse;
 import com.swatching.swatching_be.domain.brand.dto.BrandRecommendResponse;
 import com.swatching.swatching_be.domain.brand.dto.BrandResponseDto;
+import com.swatching.swatching_be.domain.brand.dto.BrandSubmitRequest;
 import com.swatching.swatching_be.domain.brand.service.BrandService;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.auth.CurrentUserProvider;
 import com.swatching.swatching_be.global.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,13 @@ public class BrandController {
     @GetMapping("/brands/{brandId}")
     public BrandDetailResponse getBrandDetail(@PathVariable Long brandId) {
         return brandService.getBrandDetail(brandId);
+    }
+
+    @PostMapping("/brands/submit")
+    public ResponseEntity<ApiResponse<Void>> submitBrand(@Valid @RequestBody BrandSubmitRequest request) {
+        User user = currentUserProvider.getCurrentUser();
+        brandService.submitBrand(request, user);
+        return ResponseEntity.ok(ApiResponse.success("브랜드 등록 신청이 완료되었습니다.", null));
     }
 
     @GetMapping("/brands/{brandId}/recommend")

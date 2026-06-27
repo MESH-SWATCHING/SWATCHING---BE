@@ -54,6 +54,12 @@ public class Brand {
     @Column(columnDefinition = "TEXT")
     private String rejectReason;
 
+    private String managerName;
+
+    private String managerEmail;
+
+    private String managerPhone;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -66,6 +72,22 @@ public class Brand {
     public void reject(String reason) {
         this.visibility = BrandVisibility.REJECTED;
         this.rejectReason = reason;
+    }
+
+    public static Brand createSubmission(String name, String summary, String instagramUrl, String websiteUrl,
+                                         String managerName, String managerEmail, String managerPhone, User ownerUser) {
+        Brand brand = new Brand();
+        brand.name = name;
+        brand.summary = summary;
+        brand.instagramUrl = instagramUrl;
+        brand.websiteUrl = websiteUrl;
+        brand.managerName = managerName;
+        brand.managerEmail = managerEmail;
+        brand.managerPhone = managerPhone;
+        brand.sourceType = BrandSourceType.OFFICIAL;
+        brand.visibility = BrandVisibility.PENDING;
+        brand.ownerUser = ownerUser;
+        return brand;
     }
 
     public static Brand createManual(String name, String instagramUrl, String websiteUrl, User ownerUser) {

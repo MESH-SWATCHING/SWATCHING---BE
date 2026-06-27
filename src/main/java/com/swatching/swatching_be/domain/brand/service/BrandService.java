@@ -9,6 +9,7 @@ import com.swatching.swatching_be.domain.brand.dto.BrandDeckResponseDto;
 import com.swatching.swatching_be.domain.brand.dto.BrandDetailResponse;
 import com.swatching.swatching_be.domain.brand.dto.BrandRecommendResponse;
 import com.swatching.swatching_be.domain.brand.dto.BrandResponseDto;
+import com.swatching.swatching_be.domain.brand.dto.BrandSubmitRequest;
 import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
@@ -113,6 +114,17 @@ public class BrandService {
         return new BrandDetailResponse(brand.getId(), brand.getName(), brand.getSummary(),
                 brand.getStory(), brand.getStorySummary(), brand.getMainImageUrl(),
                 brand.getInstagramUrl(), brand.getWebsiteUrl(), keywords, visuals);
+    }
+
+    @Transactional
+    public void submitBrand(BrandSubmitRequest request, User user) {
+        Brand brand = Brand.createSubmission(
+                request.getName(), request.getSummary(),
+                request.getInstagramUrl(), request.getWebsiteUrl(),
+                request.getManagerName(), request.getManagerEmail(), request.getManagerPhone(),
+                user
+        );
+        brandRepository.save(brand);
     }
 
     public List<BrandRecommendResponse> getRecommendedBrands(Long brandId) {
