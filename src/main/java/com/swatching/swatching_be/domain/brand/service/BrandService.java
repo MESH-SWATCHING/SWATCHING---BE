@@ -11,7 +11,7 @@ import com.swatching.swatching_be.domain.brand.dto.BrandResponseDto;
 import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
-import com.swatching.swatching_be.domain.savedbrand.SavedBrandRepository;
+import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
