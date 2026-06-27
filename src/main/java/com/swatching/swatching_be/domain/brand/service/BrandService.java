@@ -11,13 +11,18 @@ import com.swatching.swatching_be.domain.brand.dto.BrandResponseDto;
 import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
+import com.swatching.swatching_be.domain.savedbrand.SavedBrandRepository;
+import com.swatching.swatching_be.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,90 +33,208 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final BrandKeywordRepository brandKeywordRepository;
     private final BrandImageRepository brandImageRepository;
+    private final SavedBrandRepository savedBrandRepository;
+    private final BrandScoringService scoring;
 
-    public List<BrandResponseDto> getBrands(String keywordsParam) {
-        List<Brand> brands;
+    // ── Home 전체 보기 / 무드 선택 ───────────────────────────────────
 
-        if (keywordsParam == null || keywordsParam.isBlank() || keywordsParam.equalsIgnoreCase("all")) {
-            brands = brandRepository.findAll();
-        } else {
-            List<String> keywordList = Arrays.asList(keywordsParam.split(","));
-            brands = brandRepository.findBrandsHavingAnyKeyword(keywordList);
-        }
+    public List<BrandResponseDto> getBrands(String keywordsParam, User user) {
+        List<Brand> brands = fetchBrands(keywordsParam);
+        boolean isMoodFilter = isMoodFilter(keywordsParam);
+        List<String> selectedKeywords = isMoodFilter
+                ? Arrays.asList(keywordsParam.split(","))
+                : List.of();
 
-        Map<Long, List<String>> keywordMap = brandKeywordRepository.findByBrandIn(brands).stream()
-                .collect(Collectors.groupingBy(
-                        bk -> bk.getBrand().getId(),
-                        Collectors.mapping(bk -> bk.getKeyword().getName(), Collectors.toList())
-                ));
+        Map<Long, List<String>> keywordMap = buildKeywordMap(brands);
+        Map<Long, List<String>> imageMap = buildImageMap(brands);
+        Set<Long> savedIds = savedBrandRepository.findSavedBrandIdsByUserId(user.getId());
 
-        return brands.stream()
-                .map(b -> new BrandResponseDto(b, keywordMap.getOrDefault(b.getId(), List.of())))
+        List<BrandCtx> contexts = brands.stream()
+                .map(b -> new BrandCtx(b, keywordMap.getOrDefault(b.getId(), List.of()),
+                        imageMap.getOrDefault(b.getId(), List.of())))
+                .collect(Collectors.toList());
+
+        List<BrandCtx> sorted = isMoodFilter
+                ? sortByMood(contexts, selectedKeywords, savedIds)
+                : sortByHomeAll(contexts, savedIds);
+
+        return sorted.stream()
+                .map(ctx -> new BrandResponseDto(ctx.brand(), ctx.keywords()))
                 .collect(Collectors.toList());
     }
 
-    public BrandDeckResponseDto getBrandDeck(String keywordsParam) {
-        List<Brand> brands;
+    // ── Board 덱 ─────────────────────────────────────────────────────
 
-        if (keywordsParam == null || keywordsParam.isBlank() || keywordsParam.equalsIgnoreCase("all")) {
-            brands = brandRepository.findAll();
-        } else {
-            List<String> keywordList = Arrays.asList(keywordsParam.split(","));
-            brands = brandRepository.findBrandsHavingAnyKeyword(keywordList);
-        }
+    public BrandDeckResponseDto getBrandDeck(String keywordsParam, User user) {
+        List<Brand> brands = fetchBrands(keywordsParam);
+        boolean isMoodFilter = isMoodFilter(keywordsParam);
+        List<String> selectedKeywords = isMoodFilter
+                ? Arrays.asList(keywordsParam.split(","))
+                : List.of();
 
-        Map<Long, List<String>> keywordMap = brandKeywordRepository.findByBrandIn(brands).stream()
-                .collect(Collectors.groupingBy(
-                        bk -> bk.getBrand().getId(),
-                        Collectors.mapping(bk -> bk.getKeyword().getName(), Collectors.toList())
-                ));
+        Map<Long, List<String>> keywordMap = buildKeywordMap(brands);
+        Map<Long, List<String>> imageMap = buildImageMap(brands);
+        Set<Long> savedIds = savedBrandRepository.findSavedBrandIdsByUserId(user.getId());
 
-        Map<Long, List<String>> imageMap = brandImageRepository.findByBrandIn(brands).stream()
-                .collect(Collectors.groupingBy(
-                        bi -> bi.getBrand().getId(),
-                        Collectors.mapping(BrandImage::getImageUrl, Collectors.toList())
-                ));
-
-        List<BrandCardDto> brandCards = brands.stream()
-                .map(b -> new BrandCardDto(
-                        b,
-                        keywordMap.getOrDefault(b.getId(), List.of()),
-                        imageMap.getOrDefault(b.getId(), List.of())
-                ))
+        // Board: 저장 브랜드 완전 제외
+        List<BrandCtx> contexts = brands.stream()
+                .filter(b -> !savedIds.contains(b.getId()))
+                .map(b -> new BrandCtx(b, keywordMap.getOrDefault(b.getId(), List.of()),
+                        imageMap.getOrDefault(b.getId(), List.of())))
                 .collect(Collectors.toList());
 
-        return new BrandDeckResponseDto(brandCards);
+        List<BrandCtx> sorted = isMoodFilter
+                ? sortByMoodBoard(contexts, selectedKeywords)
+                : sortByBoard(contexts);
+
+        List<BrandCardDto> cards = sorted.stream()
+                .map(ctx -> new BrandCardDto(ctx.brand(), ctx.keywords(), ctx.images()))
+                .collect(Collectors.toList());
+
+        return new BrandDeckResponseDto(cards);
     }
+
+    // ── 브랜드 상세 / 추천 ────────────────────────────────────────────
 
     public BrandDetailResponse getBrandDetail(Long brandId) {
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
 
-        List<String> visuals = brandImageRepository.findByBrand_Id(brandId)
-                .stream()
-                .map(BrandImage::getImageUrl)
-                .toList();
+        List<String> visuals = brandImageRepository.findByBrand_Id(brandId).stream()
+                .map(BrandImage::getImageUrl).toList();
+        List<String> keywords = brandKeywordRepository.findByBrand_Id(brandId).stream()
+                .map(bk -> bk.getKeyword().getName()).toList();
 
-        List<String> keywords = brandKeywordRepository.findByBrand_Id(brandId)
-                .stream()
-                .map(bk -> bk.getKeyword().getName())
-                .toList();
-
-        return new BrandDetailResponse(
-                brand.getId(),
-                brand.getName(),
-                brand.getSummary(),
-                brand.getStory(),
-                brand.getStorySummary(),
-                brand.getMainImageUrl(),
-                brand.getInstagramUrl(),
-                brand.getWebsiteUrl(),
-                keywords,
-                visuals
-        );
+        return new BrandDetailResponse(brand.getId(), brand.getName(), brand.getSummary(),
+                brand.getStory(), brand.getStorySummary(), brand.getMainImageUrl(),
+                brand.getInstagramUrl(), brand.getWebsiteUrl(), keywords, visuals);
     }
 
     public List<BrandRecommendResponse> getRecommendedBrands(Long brandId) {
         return List.of();
+    }
+
+    // ── 정렬 로직 ─────────────────────────────────────────────────────
+
+    /** Home 전체 보기: 최신도(40) + 완성도(35) + 다양성(25) - 저장감점(15) */
+    private List<BrandCtx> sortByHomeAll(List<BrandCtx> items, Set<Long> savedIds) {
+        List<BrandCtx> remaining = new ArrayList<>(items);
+        remaining.sort(Comparator.comparingDouble(
+                ctx -> -scoring.homeAllBase(ctx.brand(), ctx.images().size(), savedIds.contains(ctx.brand().getId()))
+        ));
+
+        List<BrandCtx> result = new ArrayList<>();
+        List<String> recentMoods = new ArrayList<>();
+
+        while (!remaining.isEmpty()) {
+            BrandCtx best = null;
+            double bestScore = Double.NEGATIVE_INFINITY;
+
+            for (BrandCtx ctx : remaining) {
+                boolean isSaved = savedIds.contains(ctx.brand().getId());
+                double df = scoring.diversityFactor(ctx.primaryMood(), recentMoods);
+                double score = scoring.homeAllFull(ctx.brand(), ctx.images().size(), isSaved, df);
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = ctx;
+                }
+            }
+
+            result.add(best);
+            remaining.remove(best);
+            addRecentMood(recentMoods, best.primaryMood());
+        }
+        return result;
+    }
+
+    /** Home 무드 선택: 무드매칭(60) + 완성도(25) + 최신도(15) - 저장감점(15) */
+    private List<BrandCtx> sortByMood(List<BrandCtx> items, List<String> selectedKeywords, Set<Long> savedIds) {
+        return items.stream()
+                .sorted(Comparator.comparingDouble((BrandCtx ctx) ->
+                        scoring.homeMood(ctx.brand(), ctx.keywords(), ctx.images().size(),
+                                selectedKeywords, savedIds.contains(ctx.brand().getId()))
+                ).reversed())
+                .collect(Collectors.toList());
+    }
+
+    /** Board 전체 덱: 완성도(45) + 최신도(35) + 다양성(20), 저장 브랜드 제외 */
+    private List<BrandCtx> sortByBoard(List<BrandCtx> items) {
+        List<BrandCtx> remaining = new ArrayList<>(items);
+        remaining.sort(Comparator.comparingDouble(
+                ctx -> -scoring.boardBase(ctx.brand(), ctx.images().size())
+        ));
+
+        List<BrandCtx> result = new ArrayList<>();
+        List<String> recentMoods = new ArrayList<>();
+
+        while (!remaining.isEmpty()) {
+            BrandCtx best = null;
+            double bestScore = Double.NEGATIVE_INFINITY;
+
+            for (BrandCtx ctx : remaining) {
+                double df = scoring.diversityFactor(ctx.primaryMood(), recentMoods);
+                double score = scoring.boardFull(ctx.brand(), ctx.images().size(), df);
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = ctx;
+                }
+            }
+
+            result.add(best);
+            remaining.remove(best);
+            addRecentMood(recentMoods, best.primaryMood());
+        }
+        return result;
+    }
+
+    /** Board 무드 선택: 무드매칭(60) + 완성도(25) + 최신도(15), 저장 브랜드 제외 */
+    private List<BrandCtx> sortByMoodBoard(List<BrandCtx> items, List<String> selectedKeywords) {
+        return items.stream()
+                .sorted(Comparator.comparingDouble((BrandCtx ctx) ->
+                        scoring.homeMood(ctx.brand(), ctx.keywords(), ctx.images().size(),
+                                selectedKeywords, false)
+                ).reversed())
+                .collect(Collectors.toList());
+    }
+
+    // ── 공통 유틸 ─────────────────────────────────────────────────────
+
+    private List<Brand> fetchBrands(String keywordsParam) {
+        if (!isMoodFilter(keywordsParam)) return brandRepository.findAll();
+        return brandRepository.findBrandsHavingAnyKeyword(Arrays.asList(keywordsParam.split(",")));
+    }
+
+    private boolean isMoodFilter(String keywordsParam) {
+        return keywordsParam != null && !keywordsParam.isBlank()
+                && !keywordsParam.equalsIgnoreCase("all");
+    }
+
+    private Map<Long, List<String>> buildKeywordMap(List<Brand> brands) {
+        return brandKeywordRepository.findByBrandIn(brands).stream()
+                .collect(Collectors.groupingBy(
+                        bk -> bk.getBrand().getId(),
+                        Collectors.mapping(bk -> bk.getKeyword().getName(), Collectors.toList())
+                ));
+    }
+
+    private Map<Long, List<String>> buildImageMap(List<Brand> brands) {
+        return brandImageRepository.findByBrandIn(brands).stream()
+                .collect(Collectors.groupingBy(
+                        bi -> bi.getBrand().getId(),
+                        Collectors.mapping(BrandImage::getImageUrl, Collectors.toList())
+                ));
+    }
+
+    private void addRecentMood(List<String> recentMoods, String mood) {
+        recentMoods.add(mood);
+        if (recentMoods.size() > 2) recentMoods.remove(0);
+    }
+
+    // ── 내부 컨텍스트 레코드 ──────────────────────────────────────────
+
+    private record BrandCtx(Brand brand, List<String> keywords, List<String> images) {
+        String primaryMood() {
+            return keywords.isEmpty() ? "" : keywords.get(0);
+        }
     }
 }

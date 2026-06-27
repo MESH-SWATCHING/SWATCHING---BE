@@ -3,11 +3,13 @@ package com.swatching.swatching_be.global.exception;
 import com.swatching.swatching_be.global.common.ApiResponse;
 import java.sql.SQLIntegrityConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,6 +49,12 @@ public class GlobalExceptionHandler {
                     .body(ApiResponse.fail(errorCode.getCode() + ": " + errorCode.getMessage()));
         }
         return internalServerError();
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.fail("NOT_FOUND: " + exception.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

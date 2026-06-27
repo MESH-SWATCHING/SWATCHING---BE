@@ -4,19 +4,17 @@ import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.domain.user.UserRepository;
 import com.swatching.swatching_be.global.exception.BusinessException;
 import com.swatching.swatching_be.global.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@RequiredArgsConstructor
 public class CurrentUserProvider {
 
     private final UserRepository userRepository;
-
-    public CurrentUserProvider(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Transactional(readOnly = true)
     public User getCurrentUser() {
