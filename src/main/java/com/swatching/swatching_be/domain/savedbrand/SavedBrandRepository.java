@@ -8,4 +8,5 @@ public interface SavedBrandRepository extends JpaRepository<SavedBrand, Long> {
 
     Optional<SavedBrand> findByIdAndUserId(Long id, Long userId);
     Long countByUserId(Long userId);
+    boolean existsByUserIdAndBrandId(Long userId, Long brandId);
 }
