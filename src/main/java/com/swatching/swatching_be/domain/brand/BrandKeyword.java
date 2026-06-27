@@ -1,6 +1,6 @@
-package com.swatching.swatching_be.domain.brand.entity;
+package com.swatching.swatching_be.domain.brand;
 
-import com.swatching.swatching_be.domain.keyword.entity.Keyword;
+import com.swatching.swatching_be.domain.keyword.Keyword;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
