@@ -36,6 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+### Local application config ###
+src/main/resources/application.yml
+src/main/resources/application-*.yml
+
 ##민감정보
 .env
 application.yml

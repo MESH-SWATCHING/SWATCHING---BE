@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface BrandImageRepository extends JpaRepository<BrandImage, Long> {
 
+    List<BrandImage> findByBrand_Id(Long brandId);
+
     List<BrandImage> findByBrandIn(List<Brand> brands);
 }

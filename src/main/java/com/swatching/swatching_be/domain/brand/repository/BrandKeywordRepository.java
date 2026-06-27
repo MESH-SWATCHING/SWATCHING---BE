@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface BrandKeywordRepository extends JpaRepository<BrandKeyword, Long> {
 
+    List<BrandKeyword> findByBrand_Id(Long brandId);
+
     List<BrandKeyword> findByBrandIn(List<Brand> brands);
 }

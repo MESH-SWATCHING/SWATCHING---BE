@@ -5,6 +5,8 @@ import com.swatching.swatching_be.domain.brand.BrandImage;
 import com.swatching.swatching_be.domain.brand.BrandKeyword;
 import com.swatching.swatching_be.domain.brand.dto.BrandCardDto;
 import com.swatching.swatching_be.domain.brand.dto.BrandDeckResponseDto;
+import com.swatching.swatching_be.domain.brand.dto.BrandDetailResponse;
+import com.swatching.swatching_be.domain.brand.dto.BrandRecommendResponse;
 import com.swatching.swatching_be.domain.brand.dto.BrandResponseDto;
 import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
@@ -79,5 +81,37 @@ public class BrandService {
                 .collect(Collectors.toList());
 
         return new BrandDeckResponseDto(brandCards);
+    }
+
+    public BrandDetailResponse getBrandDetail(Long brandId) {
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+
+        List<String> visuals = brandImageRepository.findByBrand_Id(brandId)
+                .stream()
+                .map(BrandImage::getImageUrl)
+                .toList();
+
+        List<String> keywords = brandKeywordRepository.findByBrand_Id(brandId)
+                .stream()
+                .map(bk -> bk.getKeyword().getName())
+                .toList();
+
+        return new BrandDetailResponse(
+                brand.getId(),
+                brand.getName(),
+                brand.getSummary(),
+                brand.getStory(),
+                brand.getStorySummary(),
+                brand.getMainImageUrl(),
+                brand.getInstagramUrl(),
+                brand.getWebsiteUrl(),
+                keywords,
+                visuals
+        );
+    }
+
+    public List<BrandRecommendResponse> getRecommendedBrands(Long brandId) {
+        return List.of();
     }
 }
