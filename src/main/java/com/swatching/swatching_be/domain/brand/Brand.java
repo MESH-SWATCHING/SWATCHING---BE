@@ -28,8 +28,10 @@ public class Brand {
 
     private String mainImageUrl;
 
+    @Column(length = 2048)
     private String instagramUrl;
 
+    @Column(length = 2048)
     private String websiteUrl;
 
     @Enumerated(EnumType.STRING)
