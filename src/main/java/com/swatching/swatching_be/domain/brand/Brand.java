@@ -1,5 +1,6 @@
 package com.swatching.swatching_be.domain.brand;
 
+import com.swatching.swatching_be.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,4 +31,27 @@ public class Brand {
     private String instagramUrl;
 
     private String websiteUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BrandSourceType sourceType = BrandSourceType.OFFICIAL;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BrandVisibility visibility = BrandVisibility.PUBLIC;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_user_id")
+    private User ownerUser;
+
+    public static Brand createManual(String name, String instagramUrl, String websiteUrl, User ownerUser) {
+        Brand brand = new Brand();
+        brand.name = name;
+        brand.instagramUrl = instagramUrl;
+        brand.websiteUrl = websiteUrl;
+        brand.sourceType = BrandSourceType.MANUAL;
+        brand.visibility = BrandVisibility.PRIVATE;
+        brand.ownerUser = ownerUser;
+        return brand;
+    }
 }
