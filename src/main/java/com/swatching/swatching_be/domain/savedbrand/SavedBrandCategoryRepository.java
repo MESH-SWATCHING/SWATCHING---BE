@@ -13,4 +13,9 @@ public interface SavedBrandCategoryRepository extends JpaRepository<SavedBrandCa
     @Query("SELECT sbc.category.id, COUNT(sbc) FROM SavedBrandCategory sbc " +
             "WHERE sbc.savedBrand.user.id = :userId GROUP BY sbc.category.id")
     List<Object[]> countBrandsByCategoryRaw(@Param("userId") Long userId);
+
+    @Query("SELECT sbc.savedBrand FROM SavedBrandCategory sbc " +
+            "WHERE sbc.category.id = :categoryId AND sbc.savedBrand.user.id = :userId")
+    List<SavedBrand> findSavedBrandsByCategoryIdAndUserId(@Param("categoryId") Long categoryId,
+                                                          @Param("userId") Long userId);
 }

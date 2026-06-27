@@ -4,6 +4,8 @@ import com.swatching.swatching_be.domain.archive.converter.ArchiveConverter;
 import com.swatching.swatching_be.domain.archive.dto.ArchiveReqDTO;
 import com.swatching.swatching_be.domain.archive.dto.ArchiveResDTO;
 import com.swatching.swatching_be.domain.brand.Brand;
+import com.swatching.swatching_be.domain.brand.BrandKeyword;
+import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
 import com.swatching.swatching_be.domain.category.Category;
 import com.swatching.swatching_be.domain.category.CategoryRepository;
@@ -32,6 +34,7 @@ public class ArchiveService {
     private final SavedBrandCategoryRepository savedBrandCategoryRepository;
     private final UserRepository userRepository;
     private final BrandRepository brandRepository;
+    private final BrandKeywordRepository brandKeywordRepository;
 
     public ArchiveResDTO.CategoryListDTO getMySwatchCategories(Long userId) {
         List<Category> categories = categoryRepository.findAllByUserId(userId);
@@ -86,5 +89,34 @@ public class ArchiveService {
         }
 
         savedBrandCategoryRepository.saveAll(links);
+    }
+
+    public ArchiveResDTO.SavedBrandListDTO getSavedBrandsByCategory(Long userId, Long categoryId) {
+        List<SavedBrand> savedBrands = savedBrandCategoryRepository
+                .findSavedBrandsByCategoryIdAndUserId(categoryId, userId);
+
+        List<Brand> brands = savedBrands.stream()
+                .map(SavedBrand::getBrand)
+                .toList();
+
+        Map<Long, List<String>> keywordMap = brandKeywordRepository.findByBrandIn(brands).stream()
+                .collect(Collectors.groupingBy(
+                        bk -> bk.getBrand().getId(),
+                        Collectors.mapping(bk -> bk.getKeyword().getName(), Collectors.toList())
+                ));
+
+        List<ArchiveResDTO.SavedBrandDTO> brandDTOs = savedBrands.stream()
+                .map(sb -> ArchiveResDTO.SavedBrandDTO.builder()
+                        .savedBrandId(sb.getId())
+                        .brandId(sb.getBrand().getId())
+                        .brandName(sb.getBrand().getName())
+                        .mainImageUrl(sb.getBrand().getMainImageUrl())
+                        .keywords(keywordMap.getOrDefault(sb.getBrand().getId(), List.of()))
+                        .memo(sb.getMemo())
+                        .savedAt(sb.getCreatedAt())
+                        .build())
+                .toList();
+
+        return ArchiveResDTO.SavedBrandListDTO.builder().brands(brandDTOs).build();
     }
 }
