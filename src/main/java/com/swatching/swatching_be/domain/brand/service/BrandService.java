@@ -2,6 +2,7 @@ package com.swatching.swatching_be.domain.brand.service;
 
 import com.swatching.swatching_be.domain.brand.Brand;
 import com.swatching.swatching_be.domain.brand.BrandImage;
+import com.swatching.swatching_be.domain.brand.BrandVisibility;
 import com.swatching.swatching_be.domain.brand.BrandKeyword;
 import com.swatching.swatching_be.domain.brand.dto.BrandCardDto;
 import com.swatching.swatching_be.domain.brand.dto.BrandDeckResponseDto;
@@ -99,6 +100,10 @@ public class BrandService {
     public BrandDetailResponse getBrandDetail(Long brandId) {
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+
+        if (brand.getVisibility() != BrandVisibility.PUBLIC) {
+            throw new IllegalArgumentException("접근할 수 없는 브랜드입니다.");
+        }
 
         List<String> visuals = brandImageRepository.findByBrand_Id(brandId).stream()
                 .map(BrandImage::getImageUrl).toList();
@@ -200,7 +205,7 @@ public class BrandService {
     // ── 공통 유틸 ─────────────────────────────────────────────────────
 
     private List<Brand> fetchBrands(String keywordsParam) {
-        if (!isMoodFilter(keywordsParam)) return brandRepository.findAll();
+        if (!isMoodFilter(keywordsParam)) return brandRepository.findAllByVisibility(BrandVisibility.PUBLIC);
         return brandRepository.findBrandsHavingAnyKeyword(Arrays.asList(keywordsParam.split(",")));
     }
 

@@ -57,6 +57,11 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail("NOT_FOUND: " + exception.getMessage()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException exception) {
+        return invalidRequest(exception.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception exception) {
         log.error("Unhandled exception", exception);

@@ -51,9 +51,22 @@ public class Brand {
     @JoinColumn(name = "owner_user_id")
     private User ownerUser;
 
+    @Column(columnDefinition = "TEXT")
+    private String rejectReason;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public void approve() {
+        this.visibility = BrandVisibility.PUBLIC;
+        this.rejectReason = null;
+    }
+
+    public void reject(String reason) {
+        this.visibility = BrandVisibility.REJECTED;
+        this.rejectReason = reason;
+    }
 
     public static Brand createManual(String name, String instagramUrl, String websiteUrl, User ownerUser) {
         Brand brand = new Brand();
