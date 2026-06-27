@@ -21,4 +21,11 @@ public class BrandImage {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    public static BrandImage create(Brand brand, String imageUrl) {
+        BrandImage brandImage = new BrandImage();
+        brandImage.brand = brand;
+        brandImage.imageUrl = imageUrl;
+        return brandImage;
+    }
 }

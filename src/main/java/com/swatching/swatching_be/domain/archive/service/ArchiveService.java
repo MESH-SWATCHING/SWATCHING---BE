@@ -9,6 +9,7 @@ import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
 import com.swatching.swatching_be.domain.category.Category;
 import com.swatching.swatching_be.domain.category.repository.CategoryRepository;
+import com.swatching.swatching_be.domain.image.service.ImageUploadService;
 import com.swatching.swatching_be.domain.savedbrand.SavedBrand;
 import com.swatching.swatching_be.domain.savedbrand.SavedBrandCategory;
 import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandCategoryRepository;
@@ -35,6 +36,7 @@ public class ArchiveService {
     private final UserRepository userRepository;
     private final BrandRepository brandRepository;
     private final BrandKeywordRepository brandKeywordRepository;
+    private final ImageUploadService imageUploadService;
 
     public ArchiveResDTO.CategoryListDTO getMySwatchCategories(Long userId) {
         List<Category> categories = categoryRepository.findAllByUserId(userId);
@@ -110,7 +112,7 @@ public class ArchiveService {
                         .savedBrandId(sb.getId())
                         .brandId(sb.getBrand().getId())
                         .brandName(sb.getBrand().getName())
-                        .mainImageUrl(sb.getBrand().getMainImageUrl())
+                        .mainImageUrl(imageUploadService.createViewUrl(sb.getBrand().getMainImageUrl()))
                         .keywords(keywordMap.getOrDefault(sb.getBrand().getId(), List.of()))
                         .memo(sb.getMemo())
                         .savedAt(sb.getCreatedAt())

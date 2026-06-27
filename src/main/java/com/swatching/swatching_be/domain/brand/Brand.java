@@ -39,6 +39,12 @@ public class Brand {
     @Column(length = 2048)
     private String websiteUrl;
 
+    private String managerName;
+
+    private String managerEmail;
+
+    private String managerPhone;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BrandSourceType sourceType = BrandSourceType.OFFICIAL;
@@ -47,18 +53,16 @@ public class Brand {
     @Column(nullable = false)
     private BrandVisibility visibility = BrandVisibility.PUBLIC;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BrandApprovalStatus approvalStatus = BrandApprovalStatus.APPROVED;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_id")
     private User ownerUser;
 
     @Column(columnDefinition = "TEXT")
     private String rejectReason;
-
-    private String managerName;
-
-    private String managerEmail;
-
-    private String managerPhone;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -90,11 +94,12 @@ public class Brand {
         return brand;
     }
 
-    public static Brand createManual(String name, String instagramUrl, String websiteUrl, User ownerUser) {
+    public static Brand createManual(String name, String instagramUrl, String websiteUrl, String mainImageUrl, User ownerUser) {
         Brand brand = new Brand();
         brand.name = name;
         brand.instagramUrl = instagramUrl;
         brand.websiteUrl = websiteUrl;
+        brand.mainImageUrl = mainImageUrl;
         brand.sourceType = BrandSourceType.MANUAL;
         brand.visibility = BrandVisibility.PRIVATE;
         brand.ownerUser = ownerUser;

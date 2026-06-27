@@ -15,10 +15,14 @@ public class BrandResponseDto {
     private final List<String> keywords;
 
     public BrandResponseDto(Brand brand, List<String> keywords) {
+        this(brand, keywords, brand.getMainImageUrl());
+    }
+
+    public BrandResponseDto(Brand brand, List<String> keywords, String mainImageUrl) {
         this.brandId = brand.getId();
         this.name = brand.getName();
         this.summary = brand.getSummary();
-        this.mainImageUrl = brand.getMainImageUrl();
+        this.mainImageUrl = mainImageUrl;
         this.keywords = keywords;
     }
 }

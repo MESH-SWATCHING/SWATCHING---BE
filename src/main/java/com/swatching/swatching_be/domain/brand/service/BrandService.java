@@ -13,6 +13,7 @@ import com.swatching.swatching_be.domain.brand.dto.BrandSubmitRequest;
 import com.swatching.swatching_be.domain.brand.repository.BrandImageRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandKeywordRepository;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
+import com.swatching.swatching_be.domain.image.service.ImageUploadService;
 import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class BrandService {
     private final BrandImageRepository brandImageRepository;
     private final SavedBrandRepository savedBrandRepository;
     private final BrandScoringService scoring;
+    private final ImageUploadService imageUploadService;
 
     // ── Home 전체 보기 / 무드 선택 ───────────────────────────────────
 
@@ -61,7 +63,11 @@ public class BrandService {
                 : sortByHomeAll(contexts, savedIds);
 
         return sorted.stream()
-                .map(ctx -> new BrandResponseDto(ctx.brand(), ctx.keywords()))
+                .map(ctx -> new BrandResponseDto(
+                        ctx.brand(),
+                        ctx.keywords(),
+                        imageUploadService.createViewUrl(ctx.brand().getMainImageUrl())
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -90,7 +96,12 @@ public class BrandService {
                 : sortByBoard(contexts);
 
         List<BrandCardDto> cards = sorted.stream()
-                .map(ctx -> new BrandCardDto(ctx.brand(), ctx.keywords(), ctx.images()))
+                .map(ctx -> new BrandCardDto(
+                        ctx.brand(),
+                        ctx.keywords(),
+                        imageUploadService.createViewUrl(ctx.brand().getMainImageUrl()),
+                        imageUploadService.createViewUrls(ctx.images())
+                ))
                 .collect(Collectors.toList());
 
         return new BrandDeckResponseDto(cards);
@@ -112,8 +123,8 @@ public class BrandService {
                 .map(bk -> bk.getKeyword().getName()).toList();
 
         return new BrandDetailResponse(brand.getId(), brand.getName(), brand.getSummary(),
-                brand.getStory(), brand.getStorySummary(), brand.getMainImageUrl(),
-                brand.getInstagramUrl(), brand.getWebsiteUrl(), keywords, visuals);
+                brand.getStory(), brand.getStorySummary(), imageUploadService.createViewUrl(brand.getMainImageUrl()),
+                brand.getInstagramUrl(), brand.getWebsiteUrl(), keywords, imageUploadService.createViewUrls(visuals));
     }
 
     @Transactional

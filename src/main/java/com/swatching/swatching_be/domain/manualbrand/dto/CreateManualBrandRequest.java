@@ -5,14 +5,14 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record CreateManualBrandRequest(
-        @NotBlank(message = "브랜드 이름은 필수입니다.")
-        @Size(max = 255, message = "브랜드 이름은 최대 255자까지 가능합니다.")
+        @NotBlank(message = "Brand name is required.")
+        @Size(max = 255, message = "Brand name must be 255 characters or less.")
         String name,
-        @Size(max = 2048, message = "instagramUrl은 너무 깁니다.")
+        @Size(max = 2048, message = "instagramUrl must be 2048 characters or less.")
         String instagramUrl,
-        @Size(max = 2048, message = "websiteUrl은 너무 깁니다.")
+        @Size(max = 2048, message = "websiteUrl must be 2048 characters or less.")
         String websiteUrl,
-        @Size(max = 500, message = "메모는 최대 500자까지 가능합니다.")
+        @Size(max = 500, message = "Memo must be 500 characters or less.")
         String memo,
         List<Long> categoryIds
 ) {

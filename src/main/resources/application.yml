@@ -39,6 +39,11 @@ jwt:
   expiration-ms: 86400000
 
 app:
+  aws:
+    s3:
+      bucket: ${AWS_S3_BUCKET:}
+      region: ${AWS_S3_REGION:ap-southeast-2}
+      public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
   oauth2:
     redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:8080/auth-callback.html}
   admin:
