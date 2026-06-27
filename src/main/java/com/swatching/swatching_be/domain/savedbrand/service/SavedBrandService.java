@@ -1,5 +1,9 @@
-package com.swatching.swatching_be.domain.savedbrand;
+package com.swatching.swatching_be.domain.savedbrand.service;
 
+import com.swatching.swatching_be.domain.savedbrand.SavedBrand;
+import com.swatching.swatching_be.domain.savedbrand.dto.SavedBrandMemoResponse;
+import com.swatching.swatching_be.domain.savedbrand.dto.UpdateSavedBrandMemoRequest;
+import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.exception.BusinessException;
 import com.swatching.swatching_be.global.exception.ErrorCode;

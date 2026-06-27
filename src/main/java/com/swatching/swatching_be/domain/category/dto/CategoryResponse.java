@@ -1,4 +1,6 @@
-package com.swatching.swatching_be.domain.category;
+package com.swatching.swatching_be.domain.category.dto;
+
+import com.swatching.swatching_be.domain.category.Category;
 
 import java.time.LocalDateTime;
 

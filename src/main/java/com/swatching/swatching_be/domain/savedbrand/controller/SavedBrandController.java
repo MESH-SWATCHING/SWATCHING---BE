@@ -1,5 +1,8 @@
-package com.swatching.swatching_be.domain.savedbrand;
+package com.swatching.swatching_be.domain.savedbrand.controller;
 
+import com.swatching.swatching_be.domain.savedbrand.dto.SavedBrandMemoResponse;
+import com.swatching.swatching_be.domain.savedbrand.dto.UpdateSavedBrandMemoRequest;
+import com.swatching.swatching_be.domain.savedbrand.service.SavedBrandService;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.auth.CurrentUserProvider;
 import com.swatching.swatching_be.global.common.ApiResponse;

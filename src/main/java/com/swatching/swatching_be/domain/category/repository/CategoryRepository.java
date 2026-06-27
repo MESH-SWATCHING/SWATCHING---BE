@@ -1,5 +1,6 @@
-package com.swatching.swatching_be.domain.category;
+package com.swatching.swatching_be.domain.category.repository;
 
+import com.swatching.swatching_be.domain.category.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;

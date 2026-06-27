@@ -1,6 +1,10 @@
-package com.swatching.swatching_be.domain.category;
+package com.swatching.swatching_be.domain.category.service;
 
-import com.swatching.swatching_be.domain.savedbrand.SavedBrandCategoryRepository;
+import com.swatching.swatching_be.domain.category.Category;
+import com.swatching.swatching_be.domain.category.dto.CategoryResponse;
+import com.swatching.swatching_be.domain.category.dto.CreateCategoryRequest;
+import com.swatching.swatching_be.domain.category.repository.CategoryRepository;
+import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandCategoryRepository;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.exception.BusinessException;
 import com.swatching.swatching_be.global.exception.ErrorCode;

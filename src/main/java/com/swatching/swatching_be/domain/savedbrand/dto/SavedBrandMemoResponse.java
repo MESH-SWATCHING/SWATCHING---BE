@@ -1,4 +1,6 @@
-package com.swatching.swatching_be.domain.savedbrand;
+package com.swatching.swatching_be.domain.savedbrand.dto;
+
+import com.swatching.swatching_be.domain.savedbrand.SavedBrand;
 
 import java.time.LocalDateTime;
 

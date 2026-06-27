@@ -1,5 +1,8 @@
-package com.swatching.swatching_be.domain.manualbrand;
+package com.swatching.swatching_be.domain.manualbrand.controller;
 
+import com.swatching.swatching_be.domain.manualbrand.dto.CreateManualBrandRequest;
+import com.swatching.swatching_be.domain.manualbrand.dto.ManualBrandResponse;
+import com.swatching.swatching_be.domain.manualbrand.service.ManualBrandService;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.auth.CurrentUserProvider;
 import com.swatching.swatching_be.global.common.ApiResponse;

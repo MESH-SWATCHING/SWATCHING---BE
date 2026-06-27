@@ -1,4 +1,4 @@
-package com.swatching.swatching_be.domain.manualbrand;
+package com.swatching.swatching_be.domain.manualbrand.dto;
 
 import com.swatching.swatching_be.domain.brand.Brand;
 import com.swatching.swatching_be.domain.brand.BrandSourceType;

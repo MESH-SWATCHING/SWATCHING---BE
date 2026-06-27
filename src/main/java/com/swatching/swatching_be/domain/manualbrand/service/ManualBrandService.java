@@ -1,14 +1,16 @@
-package com.swatching.swatching_be.domain.manualbrand;
+package com.swatching.swatching_be.domain.manualbrand.service;
 
 import com.swatching.swatching_be.domain.brand.Brand;
 import com.swatching.swatching_be.domain.brand.repository.BrandRepository;
 import com.swatching.swatching_be.domain.category.Category;
-import com.swatching.swatching_be.domain.category.CategoryRepository;
-import com.swatching.swatching_be.domain.category.CategoryService;
+import com.swatching.swatching_be.domain.category.repository.CategoryRepository;
+import com.swatching.swatching_be.domain.category.service.CategoryService;
+import com.swatching.swatching_be.domain.manualbrand.dto.CreateManualBrandRequest;
+import com.swatching.swatching_be.domain.manualbrand.dto.ManualBrandResponse;
 import com.swatching.swatching_be.domain.savedbrand.SavedBrand;
 import com.swatching.swatching_be.domain.savedbrand.SavedBrandCategory;
-import com.swatching.swatching_be.domain.savedbrand.SavedBrandCategoryRepository;
-import com.swatching.swatching_be.domain.savedbrand.SavedBrandRepository;
+import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandCategoryRepository;
+import com.swatching.swatching_be.domain.savedbrand.repository.SavedBrandRepository;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.exception.BusinessException;
 import com.swatching.swatching_be.global.exception.ErrorCode;

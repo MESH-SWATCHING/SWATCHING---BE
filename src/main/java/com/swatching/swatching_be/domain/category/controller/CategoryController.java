@@ -1,5 +1,8 @@
-package com.swatching.swatching_be.domain.category;
+package com.swatching.swatching_be.domain.category.controller;
 
+import com.swatching.swatching_be.domain.category.dto.CategoryResponse;
+import com.swatching.swatching_be.domain.category.dto.CreateCategoryRequest;
+import com.swatching.swatching_be.domain.category.service.CategoryService;
 import com.swatching.swatching_be.domain.user.User;
 import com.swatching.swatching_be.global.auth.CurrentUserProvider;
 import com.swatching.swatching_be.global.common.ApiResponse;

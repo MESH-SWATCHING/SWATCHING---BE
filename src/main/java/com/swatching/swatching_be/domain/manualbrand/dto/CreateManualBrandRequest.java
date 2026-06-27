@@ -1,4 +1,4 @@
-package com.swatching.swatching_be.domain.manualbrand;
+package com.swatching.swatching_be.domain.manualbrand.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

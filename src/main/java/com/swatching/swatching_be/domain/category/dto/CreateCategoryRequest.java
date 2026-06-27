@@ -1,4 +1,4 @@
-package com.swatching.swatching_be.domain.category;
+package com.swatching.swatching_be.domain.category.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
