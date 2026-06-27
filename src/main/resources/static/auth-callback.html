@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 중...</title>
+</head>
+<body>
+<script>
+  const token = new URLSearchParams(window.location.search).get('token');
+
+  if (token) {
+    localStorage.setItem('authorized', JSON.stringify({
+      "BearerAuth": {
+        "name": "BearerAuth",
+        "schema": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" },
+        "value": token
+      }
+    }));
+  }
+
+  window.location.replace('/swagger-ui/index.html');
+</script>
+</body>
+</html>
