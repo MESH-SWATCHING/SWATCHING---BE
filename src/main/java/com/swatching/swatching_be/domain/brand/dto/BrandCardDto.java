@@ -13,6 +13,8 @@ public class BrandCardDto {
     private final String summary;
     private final String storySummary;
     private final String mainImageUrl;
+    private final String instagramUrl;
+    private final String websiteUrl;
     private final List<String> keywords;
     private final List<String> visualPreviews;
 
@@ -22,6 +24,8 @@ public class BrandCardDto {
         this.summary = brand.getSummary();
         this.storySummary = brand.getStorySummary();
         this.mainImageUrl = brand.getMainImageUrl();
+        this.instagramUrl = brand.getInstagramUrl();
+        this.websiteUrl = brand.getWebsiteUrl();
         this.keywords = keywords;
         this.visualPreviews = visualPreviews;
     }
